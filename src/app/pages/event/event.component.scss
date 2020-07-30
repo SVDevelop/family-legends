@@ -1,0 +1,20 @@
+:host  ::ng-deep  {
+  .app-list-item-place-event{
+    &:last-child{
+      .feed-place-list-items__row{
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+    }
+  }
+  .feed-place-list-items{ min-height: 40px; }
+
+  .feed-place-list-items {
+    &._event-list {
+      .template-place-list-item .template-place-list-item__image._default {
+        background-image: url("/assets/img/icons/new-event_g.svg");
+        background-size: 15%;
+      }
+    }
+  }
+}

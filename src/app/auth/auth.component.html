@@ -1,0 +1,397 @@
+<div id="family-legends">
+  <div class="page page-auth">
+    <div class="l-auth-right-to-center">
+      <div class="l-auth-main-content">
+        <img src="assets/img/auth-logo.svg" width="150" height="43" alt="Семейные легенды" class="auth-logo">
+      <!-- FORM LOGIN -->
+        <div class="feed-item">
+          <div class="l-auth-main-content-inner">
+            <div role="tablist" class="tablist">
+              <button class="button-tab" role="tab"
+                      [ngClass] = "{'inactive': tabForm !== 1, 'active': tabForm === 1}"
+                      (click)="onChangeForm(1)" >Войти на сайт</button>
+              <button class="button-tab" role="tab"
+                      [ngClass] = "{'inactive': tabForm !== 2, 'active': tabForm === 2}"
+                      (click)="onChangeForm(2)">Зарегистрироваться</button>
+            </div>
+            <mat-progress-bar mode="indeterminate" *ngIf="(authStore$ | async)?.isLoader"></mat-progress-bar>
+            <!--            AUTH -->
+            <ng-container *ngIf="tabForm === 1">
+              <form class="form auth "
+                    [formGroup]="loginForm" autocomplete="off"
+                    (ngSubmit)="ngSubmit()"
+              >
+                <div class="form__row">
+                  <div class="form__row-inner">
+                    <mat-form-field>
+                      <mat-label>Номер телефона</mat-label>
+                      <span matPrefix class="login-pref">{{prfixNumber}}&nbsp;&nbsp;&nbsp;</span>
+                      <input autocomplete="off" matInput required formControlName="lphone"
+                             type="tel"  minlength="10" maxlength="10" aria-label="lphone" placeholder=""
+                        [readonly] = "(authStore$ | async).stage === 3" cdkFocusInitial tabindex="1"
+                             (keypress)="validatePhone($event)"
+                      >
+                      <mat-error *ngIf="hasError('loginForm','lphone', 'required')">
+                        {{getErrorMessage('lphone', 'required')}}
+                      </mat-error>
+                      <mat-error
+                        *ngIf="hasError('loginForm','lphone', 'minlength')
+                        ||hasError('loginForm','lphone', 'maxlength')">
+                        {{getErrorMessage('lphone', 'invalid')}}
+                      </mat-error>
+                      <mat-error
+                        *ngIf="hasError('loginForm','lphone', 'back')">
+                        {{getErrorMessage('lphone', 'back')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="form__row" *ngIf="(authStore$ | async).stage === 2 || (authStore$ | async).stage === 4 || (authStore$ | async).stage === 5">
+                  <div class="form__row-inner">
+                    <mat-form-field>
+                      <mat-label>Код</mat-label>
+                      <input autocomplete="off" matInput formControlName="lcode"
+                             type="text"  minlength="6" maxlength="6" aria-label="lcode" cdkFocusInitial tabindex="2"
+                             (keypress)="validatePhone($event)"
+                      >
+<!--                      <mat-error *ngIf="hasError('loginForm','lcode', 'required')">-->
+<!--                        {{getErrorMessage('lcode', 'required')}}-->
+<!--                      </mat-error>-->
+                      <mat-error
+                        *ngIf="hasError('loginForm','lcode', 'minlength')
+                        ||hasError('loginForm','lcode', 'maxlength')">
+                        {{getErrorMessage('lcode', 'invalid')}}
+                      </mat-error>
+                      <mat-error
+                        *ngIf="hasError('loginForm','lcode', 'back')">
+                        {{getErrorMessage('lcode', 'back')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <button type="submit" class="button button-signin button-submit" [disabled]="!loginForm.get('lcode').valid || !loginForm.get('lcode').value"
+                        *ngIf="(authStore$ | async)?.stage === 2 || (authStore$ | async)?.stage === 4 || (authStore$ | async)?.stage === 5"
+                >
+                  Войти
+                </button>
+
+                <ng-container *ngIf="(authStore$ | async)?.stage === 1 || (authStore$ | async)?.stage === 3 ">
+                  <button type="submit" class="button button-signin button-submit" [disabled]="!loginForm.get('lphone').valid">
+                    Выслать код авторизации
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="getIsTimer()">
+                  <ng-container *ngIf="isTimerCount">
+<!--                    <span class="form-msg">Отправить код повторно через {{timerCount}} сек.</span>-->
+                    <span class="form-msg">Код действителен {{timerCount}} сек.</span>
+                  </ng-container>
+                  <ng-container *ngIf="!isTimerCount && ((authStore$ | async)?.stage === 5 || (authStore$ | async)?.stage === 2 || (authStore$ | async)?.stage === 4)">
+                    <span class="form-msg _inline-link" (click)="reSendCode()">Отправить новый SMS-код</span>
+                  </ng-container>
+                </ng-container>
+              </form>
+            </ng-container>
+            <!--            REGISTRATION -->
+            <ng-container *ngIf="tabForm === 2">
+              <form class="form register" [formGroup]="registerForm" autocomplete="off" (ngSubmit)="ngSubmitRegistration()">
+
+                <div class="form__row">
+                  <div class="form__row-inner">
+                    <mat-form-field>
+                      <mat-label>Номер телефона</mat-label>
+                      <span matPrefix class="login-pref">{{prfixNumber}}&nbsp;&nbsp;&nbsp;</span>
+                      <input autocomplete="off" matInput required formControlName="uphone"
+                             type="tel"  minlength="10" maxlength="10" aria-label="uphone" placeholder=""
+                             [readonly] = "(authStore$ | async).stage === 3" cdkFocusInitial tabindex="1"
+                             (keypress)="validatePhone($event)"
+                      >
+                      <mat-error *ngIf="hasError('registerForm','uphone', 'required')">
+                        {{getErrorMessage('uphone', 'required')}}
+                      </mat-error>
+                      <mat-error
+                        *ngIf="hasError('registerForm','uphone', 'minlength')
+                        ||hasError('registerForm','uphone', 'maxlength')">
+                        {{getErrorMessage('uphone', 'invalid')}}
+                      </mat-error>
+                      <mat-error
+                        *ngIf="hasError('registerForm','uphone', 'back')">
+                        {{getErrorMessage('uphone', 'back')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+<!--                <ng-container *ngIf="(authStore$ | async).stage === 2 || (authStore$ | async).stage === 4 || (authStore$ | async).stage === 5">-->
+                <ng-container *ngIf="(authStore$ | async)?.stage === 12 || (authStore$ | async)?.stage === 14 || (authStore$ | async)?.stage === 15">
+                  <div class="form__row" >
+                    <div class="form__row-inner">
+                      <mat-form-field>
+                        <mat-label>Код</mat-label>
+                        <input autocomplete="off" matInput formControlName="regCode"
+                               type="text"  minlength="6" maxlength="6" aria-label="regCode" cdkFocusInitial tabindex="2"
+                               (keypress)="validatePhone($event)"
+                        >
+                        <mat-error
+                          *ngIf="hasError('registerForm','regCode', 'minlength')
+                        ||hasError('registerForm','regCode', 'maxlength')">
+                          {{getErrorMessage('regCode', 'invalid')}}
+                        </mat-error>
+                        <mat-error
+                          *ngIf="hasError('registerForm','regCode', 'back')">
+                          {{getErrorMessage('regCode', 'back')}}
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="getIsTimerRegistration()">
+                  <div class="form__row" >
+                    <div class="form__row-inner">
+                      <ng-container *ngIf="isTimerCountReg">
+                        <!--                    <span class="form-msg">Отправить код повторно через {{timerCount}} сек.</span>-->
+                        <span class="form-msg _fade">Код действителен {{timerCount}} сек.</span>
+                      </ng-container>
+                      <ng-container *ngIf="!isTimerCountReg && ((authStore$ | async)?.stage === 12 || (authStore$ | async)?.stage === 14 || (authStore$ | async)?.stage === 15)">
+                        <span class="form-msg _inline-link" (click)="reSendCodeReg()">Отправить новый SMS-код</span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-container  *ngIf="(authStore$ | async)?.stage === 12 || (authStore$ | async)?.stage === 14 || (authStore$ | async)?.stage === 15">
+                  <div class="form__row  _split _merge">
+                    <div class="form__row-inner">
+                      <mat-form-field>
+                        <mat-label>Имя</mat-label>
+                        <input autocomplete="off" matInput formControlName="name"
+                          type="text" name="name" aria-label="name" minlength="1" maxlength="50">
+                        <mat-error *ngIf="hasError('registerForm','name', 'minlength')">
+                          {{getErrorMessage('name', 'invalid')}}
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div class="form__row-inner">
+                      <mat-form-field>
+                        <mat-label>Фамилия</mat-label>
+                        <input autocomplete="off" type="text"
+                          matInput formControlName="surname"
+                          name="surname" aria-label="surname"
+                          minlength="1" maxlength="50"
+                        >
+                        <mat-error *ngIf="hasError('registerForm','surname', 'minlength')">
+                          {{getErrorMessage('surname', 'invalid')}}
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="form__row">
+                    <mat-form-field class="auth-date-picker">
+  <!--                    <mat-form-field>-->
+                        <mat-label>День рождения</mat-label>
+                        <input autocomplete="off" name="birthday"  aria-label="birthday"
+                          matInput [matDatepicker]="picker" formControlName="birthday" minlength="10" maxlength="10">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="hasError('birthday', 'required')">
+                          {{getErrorMessage('birthday', 'required')}}
+                        </mat-error>
+                        <mat-error *ngIf="hasError('surname', 'minlength')
+                          || hasError('birthday', 'maxlength')">
+                          {{getErrorMessage('birthday', 'invalid')}}
+                        </mat-error>
+                      </mat-form-field>
+                  </div>
+                  <div class="form__row">
+                    <div class="form__row-inner __row-radio-buttons">
+                      <span class="mat-radio-group__gender"> Пол:</span>
+                      <mat-radio-group aria-label="gender" autocomplete="off" matInput formControlName="sex" >
+                        <mat-radio-button [value]="1" name="sex">Мужской</mat-radio-button>
+                        <mat-radio-button [value]="0" name="sex">Женский</mat-radio-button>
+  <!--                      <mat-error *ngIf="hasError('registerForm','gender', 'required')">-->
+  <!--                        {{getErrorMessage('gender', 'required')}}-->
+  <!--                      </mat-error>-->
+                      </mat-radio-group>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="(authStore$ | async)?.stage === 11 || (authStore$ | async)?.stage === 13 ">
+                  <button type="submit" class="button button-signin button-submit"
+                          [disabled]="onCheckValidateButtonSubmit()" >
+<!--                  <button type="submit" class="button button-signin button-submit">-->
+                    Выслать код подтверждения
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="(authStore$ | async)?.stage === 12 || (authStore$ | async)?.stage === 14 || (authStore$ | async)?.stage === 15">
+                  <div class="form__row" >
+                    <div class="form__row-inner">
+                      <button type="button" class="button button_link"
+                              [disabled]="onCheckValidateButtonSubmit()"
+                        (click)="ngSubmitRegistrationEmpty($event)"
+                      >
+                        Пропустить
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="(authStore$ | async)?.stage === 12 || (authStore$ | async)?.stage === 14 || (authStore$ | async)?.stage === 15">
+                  <button type="submit" class="button button-signin button-submit"
+                          [disabled]="onCheckValidateButtonSubmit(true)" >
+                    Зарегистрироваться
+                  </button>
+                </ng-container>
+              </form>
+            </ng-container>
+
+          </div>
+<!--          <div class="signin-via-socials">-->
+<!--            <small class="dark">или войдите на сайте через соцсети:</small>-->
+<!--            <div class="signin-via-socials-buttons">-->
+<!--              <button class="signin-via-social signin-via-social-vk" aria-label="Вконтакте">-->
+<!--                <img src="assets/img/icons/vk.svg" width="19" height="10" alt="Вконтакте">-->
+<!--                <img src="assets/img/icons/vk_w.svg" width="19" height="10" alt="Вконтакте" class="_hover">-->
+<!--              </button>-->
+<!--              <button class="signin-via-social signin-via-social-ok" aria-label="Одноклассники">-->
+<!--                <img src="assets/img/icons/ok.svg" width="11" height="20" alt="Одноклассники">-->
+<!--                <img src="assets/img/icons/ok_w.svg" width="11" height="20" alt="Одноклассники" class="_hover">-->
+<!--              </button>-->
+<!--              <button class="signin-via-social signin-via-social-fb" aria-label="Facebook">-->
+<!--                <img src="assets/img/icons/fb.svg" width="10" height="20" alt="Facebook">-->
+<!--                <img src="assets/img/icons/fb_w.svg" width="10" height="20" alt="Facebook" class="_hover">-->
+<!--              </button>-->
+<!--                <button class="signin-via-social signin-via-social-yt" aria-label="Youtube">-->
+<!--                  <img src="assets/img/icons/yt.svg" width="20" height="15" alt="Youtube">-->
+<!--                  <img class="_hover" src="assets/img/icons/yt_red.svg" width="20" height="15" alt="Youtube">-->
+<!--                </button>-->
+<!--            </div>-->
+<!--          </div>-->
+        </div>
+        <!-- END - FORM LOGIN -->
+        <div class="auth-copyrights dark">
+<!--          <a href="#" onclick="return false" class="dark">Правила безопасности</a>-->
+          <a href="https://xn--e1aaooafht.xn----ftbdbaabb5awgog8bzki.xn--p1ai/" class="dark">О проекте</a>
+          © Семейные Легенды 2020
+        </div>
+      </div>
+    </div>
+    <!-- CONTENT   -->
+    <div class="l-auth-left-to-center">
+<!--      <ng-container >-->
+<!--        <ng-container *ngIf="slider.activeSlide === 1"   >-->
+          <div class="l-auth-left-slide l-auth-left-slide-1" [@showHideOpacity]="slider.activeSlide !== 1 ? 'hide' : 'show'">
+            <div class="l-auth-left-vintage-grid-container">
+              <div class="vintage-grid">
+                <div class="vintage-grid-line">
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old9.png" class="vintage-image 0x0"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old3.png" class="vintage-image 0x1"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old6.png" class="vintage-image 0x2"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old1.png" class="vintage-image 0x3"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old4.png" class="vintage-image 0x4"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old8.png" class="vintage-image 0x5"></div>
+                </div>
+                <div class="vintage-grid-line">
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old5.png" class="vintage-image 1x0"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old7.png" class="vintage-image 1x1"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old8.png" class="vintage-image 1x2"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old9.png" class="vintage-image 1x3"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old1.png" class="vintage-image 1x4"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old2.png" class="vintage-image 1x5"></div>
+                </div>
+                <div class="vintage-grid-line">
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old2.png" class="vintage-image 2x0"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old8.png" class="vintage-image 2x1"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old1.png" class="vintage-image 2x2"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old3.png" class="vintage-image 2x3"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old5.png" class="vintage-image 2x4"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old7.png" class="vintage-image 2x5"></div>
+                </div>
+                <div class="vintage-grid-line">
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old7.png" class="vintage-image 3x0"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old9.png" class="vintage-image 3x1"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old3.png" class="vintage-image 3x2"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old6.png" class="vintage-image 3x3"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old9.png" class="vintage-image 3x4"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old3.png" class="vintage-image 3x5"></div>
+                </div>
+                <div class="vintage-grid-line">
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old4.png" class="vintage-image 4x0"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old1.png" class="vintage-image 4x1"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old5.png" class="vintage-image 4x2"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old9.png" class="vintage-image 4x3"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old4.png" class="vintage-image 4x4"></div>
+                  <div class="vintage-grid-item"><img src="assets/img/auth/old8.png" class="vintage-image 4x5"></div>
+                </div>
+              </div>
+            </div>
+            <div class="l-auth-left-content">
+              <h1> Семейные Легенды — <br> это место, в котором собрана <br> и сохранена фамильная история </h1>
+              <p>Цифровая мультимедийная энциклопедия объединит всех родственников и станет хранительницей традиций и памяти о фамилии, связующим звеном для поколений и отличным поводом для того, чтобы собраться вместе и в очередной раз послушать захватывающие семейные легенды или записать новые истории.</p>
+            </div>
+          </div>
+          <div class="l-auth-left-slide l-auth-left-slide-2 " [@showHideOpacity]="slider.activeSlide === 2 ? 'show' : 'hide'">
+            <div class="l-auth-left-content">
+              <h1>Возможности платформы</h1>
+              <div class="auth-features">
+                <div class="auth-feature"><img src="assets/img/auth/feature-albums.png" width="200" height="160" class="auth-feature-img">
+                  <div class="auth-feature-desc">
+                    <b class="auth-feature-header">Интерактивные альбомы</b>
+                    <p>Теперь фотографии, видео, воспоминания и истории легко собирать всей семьей, удобно хранить и делиться ими со следующим поколением.</p>
+                  </div>
+                </div>
+                <div class="auth-feature"><img src="assets/img/auth/feature-tree.png" width="200" height="160" class="auth-feature-img">
+                  <div class="auth-feature-desc">
+                    <b class="auth-feature-header">Семейное древо</b>
+                    <p>Визуализация семейной структуры с возможностью объединять различный мультимедийный контент и истории, рассказанные членами семьи, по местам и событиям.</p>
+                  </div>
+                </div>
+                <div class="auth-feature"><img src="assets/img/auth/feature-voice.png" width="200" height="160" class="auth-feature-img">
+                  <div class="auth-feature-desc">
+                    <b class="auth-feature-header">Голосовое управление</b>
+                    <p>Мы интегрируем в проект современные технологии работы со звуком. Голосовые интерфейсы сделают сервис комфортнее для пожилых людей и добавят новые возможности для использования.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="l-auth-left-slide l-auth-left-slide-3 " [@showHideOpacity]="slider.activeSlide === 3 ? 'show' : 'hide'">
+            <div class="auth-phones">
+              <img src="assets/img/auth/phone-2.png" width="205" height="415" class="auth-phone auth-phone-2">
+              <img src="assets/img/auth/phone-1.png" width="211" height="415" class="auth-phone auth-phone-1">
+            </div>
+            <div class="l-auth-left-content">
+              <h1>Приложение для мобильных устройств</h1>
+              <p>Установите мобильное приложение «Семейные Легенды», которое объединит всех родственников и
+                станет хранительницей традиций и памяти о фамилии, связующим звеном для поколений.</p>
+              <div class="auth-get-apps">
+<!--                <a href="#" onclick="return false" class="auth-get-app">-->
+<!--                  <img src="assets/img/icons/apple-app.svg" width="14" height="17" alt="AppStore"-->
+<!--                       class="auth-get-app-icon auth-get-app-icon-apple">-->
+<!--                  <small>Загрузите в</small>-->
+<!--                  <b>App Store</b>-->
+<!--                </a>-->
+                <a href="https://play.google.com/store/apps/details?id=familytale.android&hl=ru" class="auth-get-app">
+                  <img src="assets/img/icons/google-app.svg" width="14" height="15" alt="AppStore"
+                       class="auth-get-app-icon auth-get-app-icon-google-play" alt="GooglePlay">
+                  <small>Загрузите в</small>
+                  <b>Google Play</b>
+                </a>
+              </div>
+            </div>
+          </div>
+
+      <div class="l-auth-left-content _auth-navigate">
+        <div class="auth-slideshow">
+          <div class="auth-slideshow-arrow auth-slideshow-arrow-prev" (click)="onChangeNumberActiveSlide('prev')"></div>
+          <div class="auth-slideshow-point" [ngClass]="{'cur': slider.activeSlide === 1}" (click)="changeNumberActiveSlide(1)"></div>
+          <div class="auth-slideshow-point" [ngClass]="{'cur': slider.activeSlide === 2}"  (click)="changeNumberActiveSlide(2)"></div>
+          <div class="auth-slideshow-point" [ngClass]="{'cur': slider.activeSlide === 3}"  (click)="changeNumberActiveSlide(3)"></div>
+          <div class="auth-slideshow-arrow auth-slideshow-arrow-next" (click)="onChangeNumberActiveSlide('next')"></div>
+        </div>
+      </div>
+    </div>
+    <!-- END - CONTENT   -->
+  </div>
+</div>

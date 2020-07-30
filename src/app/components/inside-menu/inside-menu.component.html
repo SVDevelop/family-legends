@@ -1,0 +1,21 @@
+<nav class="left-menu">
+  <a class="left-menu__item to-feed" routerLink="/feed" [ngClass]="{'_active': activeMenu==='feed'}">
+    <img class="" src="assets/img/icons/home.svg" width="14" height="13">
+    <img class="_active" src="assets/img/icons/feed.svg" width="14" height="13">
+    Лента
+  </a>
+  <a class="left-menu__item to-persons" routerLink="/person" [ngClass]="{'_active': activeMenu==='person'}">
+    <img class="" src="assets/img/icons/persons.svg" width="14" height="11">
+    <img class="_active" src="assets/img/icons/persons-active.svg" width="14" height="11">
+    Персоны
+  </a>
+  <a class="left-menu__item to-places"  routerLink="/places" [ngClass]="{'_active': activeMenu==='places'}">
+    <img class="" src="assets/img/icons/places.svg" width="8" height="11">
+    <img class="_active" src="assets/img/icons/place.svg" width="8" height="11">
+    Места</a>
+  <a class="left-menu__item to-events" routerLink="/event" [ngClass]="{'_active': activeMenu==='event'}">
+    <img class="" src="assets/img/icons/events.svg" width="10" height="12">
+    <img class="_active" src="assets/img/icons/new-event.svg" width="10" height="12">
+    События
+  </a>
+</nav>

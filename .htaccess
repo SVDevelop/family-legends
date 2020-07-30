@@ -1,0 +1,15 @@
+Options All -Indexes
+
+#RewriteEngine On
+#RewriteCond %{HTTP_HOST} ^www.dev.ft.inet.name\.ru$ [NC]
+#RewriteRule ^(.*)$ https://www.dev.ft.inet.name/$1 [L,R=301]
+
+RewriteEngine On
+    # If an existing asset or directory is requested go to it as it is
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
+    RewriteRule ^ - [L]
+    # If the requested resource doesn't exist, use index.html
+RewriteRule ^ /index.html
+
+#ErrorDocument 404 /404.html

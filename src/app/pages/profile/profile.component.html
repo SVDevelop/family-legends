@@ -1,0 +1,169 @@
+<div class="uk-container l-container page-content">
+  <div class="l-left">
+    <div class="g-back-button" [routerLink]="['/feed']">
+      <div class="g-back-button__item"></div>
+      <div class="g-back-button__text"> Лента</div>
+    </div>
+  </div>
+  <div class="l-center">
+    <div class="new-item-create__form">
+      <form class="form profile-edit new-item-create-form _has-wide-row"
+            autocomplete="off"
+            [formGroup]="profileEdit"
+            (ngSubmit)="ngSubmit()"
+      >
+
+        <div class="new-item-create-form__column _wide">
+          <div class="new-item-create-form__row">
+            <div class="profile-edit-avatar"
+                 [ngClass]="{'_error': hasError('profileEdit', 'file','back')}">
+              <ng-container *ngIf="imageUrl; else notProfileImg">
+                <div class="profile-edit-avatar__img"
+                     [ngStyle]="{'background-image': 'url('+ imageUrl + ')'}"
+                     (click)="imgProfileUpload.click()">
+                  <div class="profile-edit-avatar__img-update"><span>обновить фото</span></div>
+                </div>
+              </ng-container>
+              <ng-template #notProfileImg>
+                <div class="profile-edit-avatar__img _default">
+                  <label for="imgProfileUpload" class="profile-edit-avatar__img-label"><span>добавить фото</span></label>
+                </div>
+              </ng-template>
+              <div class="new-item-create-form__image-error"> Некорректный формат изображения </div>
+              <input type="file" formControlName="file"
+                     #imgProfileUpload id="imgProfileUpload"
+                     name="attachment" multiple="false" accept="image/jpeg,image/png, image/x-png"
+                     (change)="onFileChange($event)" style="display:none;"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="new-item-create-form__column _wide">
+          <div class="form-section sep-bottom">
+
+            <div class="new-item-create-form__row _column2">
+              <div class="new-item-create-form__row-col">
+                <mat-form-field>
+                  <mat-label>Фамилия</mat-label>
+                  <input autocomplete="off" matInput required formControlName="surName"
+                         type="text"  minlength="1" aria-label="surName" placeholder="" maxLength="50"
+                  >
+                  <mat-error *ngIf="hasError('profileEdit','surName', 'required')">
+                    {{getErrorMessage('surName', 'required')}}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="hasError('profileEdit','surName', 'minlength')">
+                    {{getErrorMessage('surName', 'invalid')}}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="hasError('profileEdit','surName', 'back')">
+                    {{getErrorMessage('surName', 'back')}}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="new-item-create-form__row-col">
+                <mat-form-field>
+                  <mat-label>Имя</mat-label>
+                  <input autocomplete="off" matInput required formControlName="firstName"
+                         type="text"  minlength="1" aria-label="firstName" placeholder="" maxLength="50"
+                  >
+                  <mat-error *ngIf="hasError('profileEdit','firstName', 'required')">
+                    {{getErrorMessage('name', 'required')}}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="hasError('profileEdit','firstName', 'minlength')">
+                    {{getErrorMessage('name', 'invalid')}}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="hasError('profileEdit','firstName', 'back')">
+                    {{getErrorMessage('name', 'back')}}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="new-item-create-form__row _column2">
+              <div class="new-item-create-form__row-col">
+                <mat-form-field class="mat-date-picker-field">
+                  <mat-label>Дата рождения</mat-label>
+                  <input autocomplete="off" name="birthDate"  required aria-label="birthDate" readonly
+                         matInput [matDatepicker]="picker" formControlName="birthDate" minlength="10" maxlength="10">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <mat-error *ngIf="hasError('profileEdit','birthDate', 'required')">
+                    {{getErrorMessage('birthDate', 'required')}}
+                  </mat-error>
+                  <mat-error *ngIf="hasError('profileEdit', 'birthDate','birthDate')
+                  || hasError('profileEdit','birthDate', 'maxlength')">
+                    {{getErrorMessage('birthDate', 'invalid')}}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="new-item-create-form__row-col">
+                <mat-form-field class="form-field-phone">
+                  <mat-label>Номер телефона</mat-label>
+                  <span matPrefix class="phone-pref">{{prfixNumber}}&nbsp;&nbsp;&nbsp;</span>
+                  <input autocomplete="off" matInput formControlName="phone"
+                         type="tel"  minlength="10" maxlength="10" aria-label="phone" placeholder=""
+                         cdkFocusInitial tabindex="1"
+                         (keypress)="validatePhone($event)"
+                  >
+                  <mat-error *ngIf="hasError('loginForm','phone', 'required')">
+                    {{getErrorMessage('phone', 'required')}}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="hasError('loginForm','phone', 'minlength')
+                        ||hasError('loginForm','phone', 'maxlength')">
+                    {{getErrorMessage('phone', 'invalid')}}
+                  </mat-error>
+                  <mat-error
+                    *ngIf="hasError('loginForm','phone', 'back')">
+                    {{getErrorMessage('phone', 'back')}}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <div class="new-item-create-form__row">
+              <span class="mat-radio-group__gender"> Пол *:</span>
+              <mat-radio-group aria-label="sex" autocomplete="off" matInput formControlName="sex" >
+                <mat-radio-button [value]="1" name="sex">Мужской</mat-radio-button>
+                <mat-radio-button [value]="0" name="sex">Женский</mat-radio-button>
+                <mat-error *ngIf="hasError('profileEdit','sex', 'required')">
+                  {{getErrorMessage('gender', 'required')}}
+                </mat-error>
+              </mat-radio-group>
+            </div>
+            <div class="new-item-create-form__row">
+              <mat-form-field class="mat-form-field-textarea">
+                <mat-label>Описание</mat-label>
+                <textarea matInput
+                          cdkAutosizeMinRows="4"
+                          cdkAutosizeMaxRows="4"
+                          rows="4"
+                          formControlName="text"
+                          maxLength="50"
+                ></textarea>
+                <mat-error
+                  *ngIf="hasError('profileEdit','text', 'back')">
+                  {{getErrorMessage('text', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!--  #### -->
+        <div class="new-item-create-form__column _wide">
+          <div class="new-item-create-form__row _column2">
+            <div class="new-item-create-form__row-col">
+              <button class="new-item-create-button" type="submit"
+                      [disabled]="checkValidFormDisable()"> Сохранить </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="l-right"></div>
+</div>

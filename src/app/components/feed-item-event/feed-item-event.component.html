@@ -1,0 +1,65 @@
+<div class="feed-item feed-event">
+  <div class="avatar-feed-author uk-flex">
+    <div class="avatar-with-icon">
+      <ng-container *ngIf="dataFeedEvent.person_creater.attachment | attachImage; else elseNotImageEvent">
+          <ng-container *ngIf="dataFeedEvent.person_creater.attachment.url">
+            <div  class="avatar avatar-def" [ngStyle]="{'background-image': 'url('+ dataFeedEvent.person_creater.attachment.url + ')'}"></div>
+          </ng-container>
+      </ng-container>
+      <ng-template #elseNotImageEvent>
+        <img class="avatar _default" src="assets/img/icons/persons.svg"
+             width="26" height="26">
+      </ng-template>
+      <div class="avatar-icon icon-event"><img src="assets/img/icons/new-event_w.svg" width="9" height="10"></div>
+
+    </div>
+    <div class="avatar-feed-author-text">
+      <a href="#" onclick="return false" class="avatar-feed-author-name" [routerLink]="['/person', dataFeedEvent.created_by]" >{{dataFeedEvent.person_creater.first_name||'Пользователь'}} {{dataFeedEvent.person_creater.surname||''}}</a>
+      <ng-container *ngIf="dataFeedEvent.updated_at; else elseNotUpdateDAte">
+        <small class="gray">Событие обновлено •
+          <span class="time-readable">{{dataFeedEvent.updated_at | date:'dd.MM.yyyy, HH:mm' }}</span>
+        </small>
+      </ng-container>
+      <ng-template #elseNotUpdateDAte>
+        <small class="gray">Событие создано •
+          <span class="time-readable">{{dataFeedEvent.created_at | date:'dd.MM.yyyy, HH:mm' }}</span>
+        </small>
+      </ng-template>
+    </div>
+  </div>
+  <div class="feed-router-e-wrapper">
+    <ng-container *ngIf="dataFeedEvent.attachments">
+      <ng-container *ngIf="dataFeedEvent.attachments | attachImages ">
+        <div class="feed-medias"
+             [ngClass]="'feed-medias-'+ (dataFeedEvent.attachments | attachImages).length">
+          <div class="feed-media-main" *ngIf="(dataFeedEvent.attachments | attachImages)[0]">
+            <div class="feed-media"
+                 [ngStyle]="{ 'background-image': 'url(' + (dataFeedEvent.attachments | attachImages)[0].url +')'}"></div>
+          </div>
+          <div class="feed-media-column" *ngIf=" (dataFeedEvent.attachments | attachImages).length > 1">
+            <div class="feed-media"
+                 *ngIf="(dataFeedEvent.attachments | attachImages)[1]"
+                 [ngStyle]="{ 'background-image': 'url(' + (dataFeedEvent.attachments | attachImages)[1].url +')'}"></div>
+            <div class="feed-media"
+                 *ngIf="(dataFeedEvent.attachments | attachImages)[2]"
+                 [ngStyle]="{ 'background-image': 'url(' + (dataFeedEvent.attachments | attachImages)[2].url +')'}"></div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="dataFeedEvent.event.name">
+      <div class="feed-description-name">{{dataFeedEvent.event.name}}</div>
+    </ng-container>
+    <ng-container *ngIf="dataFeedEvent.event.date_event">
+      <ng-container *ngIf="dataFeedEvent.event.date_event">
+        <div class="feed-sub-description">{{dataFeedEvent.event.date_event.date | date:'dd.MM.yyyy'}}</div>
+      </ng-container>
+
+    </ng-container>
+    <!--              CONTAINER_COUNTER-->
+    <ng-container *ngIf="dataFeedEvent.event.counters">
+      <app-relation-counter [counterItem]="dataFeedEvent.event.counters" [classWrapMod]="'_left'"></app-relation-counter>
+    </ng-container>
+    <div class="feed-router-e" [routerLink]="['/event', dataFeedEvent.id]"></div>
+  </div>
+</div>

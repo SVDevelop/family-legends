@@ -1,0 +1,99 @@
+<div class="new-item-create">
+  <div class="new-item-create__inner">
+    <div class="new-item-create__title _note">Добавить новую запись</div>
+    <div class="new-item-create__form">
+
+      <form autocomplete="off"
+            [formGroup]="newNoteForm"
+            (ngSubmit)="ngSubmit()">
+        <div class="new-item-create-form _has-wide-row ">
+          <div class="new-item-create-form__column _wide">
+            <div class="new-item-create-form__row">
+              <ng-container *ngIf="aNewImages.length">
+                <div class="feed-medias feed-medias-{{aNewImages.length}}">
+                  <ng-container *ngIf="aNewImages.length >= 1">
+                    <div class="feed-media-main">
+                      <div class="feed-media" [ngStyle]="{ 'background-image': 'url(' + aNewImages[0].previewUrl +')'}">
+                        <div class="feed-media-x" (click)="deleteFileByNewImages(aNewImages[0].id)"></div>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="aNewImages.length >= 2">
+                    <div class="feed-media-column">
+                      <ng-container *ngFor="let itemColumn of aNewImages; index as index">
+                        <ng-container *ngIf="index > 0 && index < 4">
+                          <div class="feed-media" [ngStyle]="{ 'background-image': 'url(' + itemColumn.previewUrl +')'}">
+                            <div class="feed-media-x" (click)="deleteFileByNewImages(itemColumn.id)"></div>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="aNewImages.length >= 5">
+                    <div class="feed-media-row">
+                      <ng-container *ngFor="let itemRow of aNewImages; index as index">
+                        <ng-container *ngIf="index >= 4 ">
+                          <div class="feed-media" [ngStyle]="{ 'background-image': 'url(' + itemRow.previewUrl +')'}">
+                            <div class="feed-media-x" (click)="deleteFileByNewImages(itemRow.id)"></div>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
+                <div class="new-item-create-form__image-wrap _image-new-note"
+                     [ngClass]="{
+                     '_error': hasError('newNoteForm', 'file','back')
+                     ,'_not-default':aNewImages.length
+                     }"
+                >
+                  <div class="new-item-create-form__image">
+                      <div class="new-item-create-form__image-default _person">Добавить фото записи</div>
+                      <label for="photoPersonUpload" class="new-item-create-form__image-label"></label>
+                    <input type="file" formControlName="file"
+                           #photoPersonUpload id="photoPersonUpload"
+                           name="attachment" multiple="false" accept="image/jpeg,image/png"
+                           (change)="onFileChange($event)" style="display:none;"/>
+
+                  </div>
+                  <div class="new-item-create-form__image-error"> Некорректный формат изображения </div>
+                </div>
+            </div>
+
+
+          </div>
+          <div class="new-item-create-form__column _wide">
+            <div class="new-item-create-form__row">
+              <mat-form-field class="mat-form-field-textarea">
+                <mat-label>Текст записи</mat-label>
+                <textarea matInput
+                          cdkAutosizeMinRows="6"
+                          cdkAutosizeMaxRows="6"
+                          rows="6"
+                          formControlName="text"
+                ></textarea>
+                <mat-error
+                  *ngIf="hasError('newNoteForm','text', 'back')">
+                  {{getErrorMessage('text', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="new-item-create-form__row-col">
+
+            </div>
+
+          </div>
+
+          <div class="new-item-create-form__column _wide">
+            <div class="new-item-create-form__row">
+              <button class="new-item-create-button" type="submit"
+                      [disabled]="checkValidFormDisable()"
+              > Сохранить </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

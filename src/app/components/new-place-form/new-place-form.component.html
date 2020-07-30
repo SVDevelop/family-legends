@@ -1,0 +1,105 @@
+<div class="new-item-create">
+  <div class="new-item-create__inner">
+    <div class="new-item-create__title _place">Добавить новое место</div>
+    <div class="new-item-create__form">
+
+      <form autocomplete="off"
+            [formGroup]="newPlaceForm"
+            (ngSubmit)="ngSubmit()">
+        <div class="new-item-create-form _has-wide-row _column-2-60">
+          <div class="new-item-create-form__column">
+            <div class="new-item-create-form__row">
+              <mat-form-field>
+                <mat-label>Название места</mat-label>
+                <input autocomplete="off" matInput required formControlName="name"
+                       type="text"  minlength="1" aria-label="name" placeholder=""
+                >
+                <mat-error *ngIf="hasError('newPlaceForm','name', 'required')">
+                  {{getErrorMessage('name', 'required')}}
+                </mat-error>
+                <mat-error
+                  *ngIf="hasError('newPlaceForm','name', 'minlength')">
+                  {{getErrorMessage('name', 'invalid')}}
+                </mat-error>
+                <mat-error
+                  *ngIf="hasError('newPlaceForm','name', 'back')">
+                  {{getErrorMessage('name', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="new-item-create-form__row">
+              <mat-form-field class="mat-form-field-textarea">
+                <mat-label>Описание места (опционально)</mat-label>
+                <textarea matInput
+                          cdkAutosizeMinRows="7"
+                          cdkAutosizeMaxRows="7"
+                          rows="7"
+                          formControlName="text"
+                ></textarea>
+                <mat-error
+                  *ngIf="hasError('newPlaceForm','text', 'back')">
+                  {{getErrorMessage('text', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+
+          </div>
+
+          <div class="new-item-create-form__column">
+            <!--            <div class="new-item-create-form__image" (clcik)="photoPersonUpload.click()">-->
+            <!--              <div class="new-item-create-form__image-default _person">Фото персоны</div>-->
+            <!--              <div class="new-item-create-form__image-x"></div>-->
+            <!--            </div>-->
+            <div class="new-item-create-form__image-wrap"
+                 [ngClass]="{'_error': hasError('newPlaceForm', 'file','back')}"
+            >
+              <div class="new-item-create-form__image"
+                   [ngStyle]="{'background-image': 'url('+ imageUrl + ')'}"
+                   [ngClass]="{'_error': hasError('newPlaceForm', 'file','back')}"
+              >
+                <ng-container *ngIf="!imageUrl">
+                  <div class="new-item-create-form__image-default _person">Фото места</div>
+                </ng-container>
+                <ng-container *ngIf="imageUrl">
+                  <div class="new-item-create-form__image-x" (click)="clearFile()"></div>
+                </ng-container>
+                <ng-container *ngIf="!imageUrl">
+                  <label for="photoPersonUpload" class="new-item-create-form__image-label"></label>
+                </ng-container>
+                <input type="file" formControlName="file"
+                       #photoPersonUpload id="photoPersonUpload"
+                       name="attachment" multiple="false" accept="image/jpeg,image/png"
+                       (change)="onFileChange($event)" style="display:none;"/>
+
+              </div>
+              <div class="new-item-create-form__image-error"> Некорректный формат изображения </div>
+            </div>
+
+          </div>
+
+          <div class="new-item-create-form__column _wide">
+            <div class="new-item-create-form__row">
+              <mat-form-field>
+                <mat-label>Адрес (опционально)</mat-label>
+                <input autocomplete="off" matInput formControlName="address"
+                       type="text"  aria-label="address" placeholder=""
+                >
+                <mat-error
+                  *ngIf="hasError('newPlaceForm','address', 'back')">
+                  {{getErrorMessage('address', 'back')}}
+                </mat-error>
+                <!--                <validator-message [field]="newPlaceForm.get('surName')"></validator-message>-->
+              </mat-form-field>
+            </div>
+            <div class="new-item-create-form__row">
+              <button class="new-item-create-button" type="submit"
+                      [disabled]="checkValidFormDisable()"
+              > Сохранить </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

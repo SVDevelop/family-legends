@@ -1,0 +1,82 @@
+<!-- PERSON -->
+<div class="feed-item feed-event feed-person">
+  <div class="avatar-feed-author uk-flex">
+    <div class="avatar-with-icon">
+      <ng-container *ngIf="dataFeedPerson.person_creater.attachment | attachImage; else elseNotImagePerson">
+          <ng-container *ngIf="dataFeedPerson.person_creater.attachment.url">
+            <div  class="avatar avatar-def" [ngStyle]="{'background-image': 'url('+ dataFeedPerson.person_creater.attachment.url + ')'}"></div>
+          </ng-container>
+      </ng-container>
+      <ng-template #elseNotImagePerson>
+        <img class="avatar _default" src="assets/img/icons/persons.svg"
+             width="26" height="26">
+      </ng-template>
+      <div class="avatar-icon icon-person"><img src="assets/img/icons/new-person_w.svg" width="11" height="8"></div>
+
+    </div>
+    <div class="avatar-feed-author-text">
+      <a href="#" onclick="return false" class="avatar-feed-author-name" [routerLink]="['/person', dataFeedPerson.created_by]" >{{dataFeedPerson.person_creater.first_name||'Пользователь'}} {{dataFeedPerson.person_creater.surname||''}}</a>
+      <ng-container *ngIf="dataFeedPerson.updated_at; else elseNotUpdateDAte">
+        <small class="gray">Персона обновлена •
+          <span class="time-readable">{{dataFeedPerson.updated_at | date:'dd.MM.yyyy, HH:mm' }}</span>
+        </small>
+      </ng-container>
+      <ng-template #elseNotUpdateDAte>
+        <small class="gray">Персона создана •
+          <span class="time-readable">{{dataFeedPerson.created_at | date:'dd.MM.yyyy, HH:mm' }}</span>
+        </small>
+      </ng-template>
+    </div>
+  </div>
+  <div class="feed-router-e-wrapper">
+    <div class="feed-medias feed-medias-1">
+      <div class="feed-media-main">
+        <ng-container *ngIf="(dataFeedPerson.attachments | attachImages); else elseBackImagePerson">
+          <div class="feed-media"
+               [ngStyle]="{ 'background-image': 'url(' + (dataFeedPerson.attachments | attachImages)[0].url +')'}"></div>
+        </ng-container>
+        <ng-template #elseBackImagePerson>
+          <div class="feed-media"></div>
+        </ng-template>
+        <div class="feed-person-info">
+          <div class="feed-person-info__inner">
+            <!-- IMAGE-->
+            <ng-container *ngIf="(dataFeedPerson.attachments | attachImages); else elseNotImagePersonItem">
+              <ng-container *ngIf="(dataFeedPerson.attachments | attachImages)[0].url">
+                <div class="feed-person-info__image"
+                     [ngStyle]="{ 'background-image': 'url(' + (dataFeedPerson.attachments | attachImages)[0].url +')'}"></div>
+              </ng-container>
+            </ng-container >
+
+            <ng-template #elseNotImagePersonItem>
+              <div class="feed-person-info__image _default"></div>
+            </ng-template>
+
+            <!-- NAME-->
+            <div class="feed-person-info__name">{{dataFeedPerson.person.first_name || 'Пользователь'}} {{dataFeedPerson.person.surname}}</div>
+            <!-- DATE-->
+            <ng-container *ngIf="dataFeedPerson.person.birth_date">
+              <div class="feed-person-info__date">
+                {{dataFeedPerson.person.birth_date.date | date:'dd.MM.yyyy'}}
+                <ng-container *ngIf="dataFeedPerson.person.death_date">
+                  &nbsp;—&nbsp;{{dataFeedPerson.person.death_date.date | date:'dd.MM.yyyy'}}
+                </ng-container>
+              </div>
+            </ng-container>
+            <!--              CONTAINER_COUNTER-->
+            <ng-container *ngIf="dataFeedPerson.person.counters">
+              <div class="feed-person-info__counter">
+                <app-relation-counter [counterItem]="dataFeedPerson.person.counters"></app-relation-counter>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="feed-router-e" [routerLink]="['/person', dataFeedPerson.id]"></div>
+  </div>
+
+  <div class="feed-description">{{dataFeedPerson.text}}</div>
+</div>
+<!-- PERSON --- END -->

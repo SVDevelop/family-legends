@@ -1,0 +1,17 @@
+<div class="feed-person-info-counter" [ngClass]="classWrapMod||''">
+<!--  <ng-container *ngIf="counterItem.image">-->
+    <div class="feed-person-info-counter__item _image"
+         [ngClass]="{'_zero': counterItem.image === 0}"
+    >{{counterItem.image}}</div>
+<!--  </ng-container>-->
+<!--  <ng-container *ngIf="counterItem.audio">-->
+    <div class="feed-person-info-counter__item _audio"
+      [ngClass]="{'_zero': counterItem.audio === 0}"
+    >{{counterItem.audio}}</div>
+<!--  </ng-container>-->
+<!--  <ng-container *ngIf="counterItem.note">-->
+    <div class="feed-person-info-counter__item _comment"
+         [ngClass]="{'_zero': counterItem.note === 0}"
+    >{{counterItem.note}}</div>
+<!--  </ng-container>-->
+</div>

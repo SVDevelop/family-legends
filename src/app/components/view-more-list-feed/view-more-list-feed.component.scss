@@ -1,0 +1,21 @@
+@import "../../../variables";
+
+.view-more-list-feed{
+  padding: 30px 15px 10px;
+  //border-top: 1px solid $gray-lite;
+  text-align: center;
+  .view-more-list-feed__item{
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1.2;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: $black;
+    opacity: 0.6;
+    transition: opacity $transition;
+    &:hover{
+      opacity: 1;
+    }
+  }
+}

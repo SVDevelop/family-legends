@@ -1,0 +1,72 @@
+@import "../../../variables";
+
+.feed-place-list-items__row{
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid $gray-lite;
+}
+.template-place-list-item{
+  display: flex;
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  *{
+    box-sizing: border-box;
+  }
+  .template-place-list-item__image{
+    flex-basis: 180px;
+    height: 102px;
+    border: 1px solid $shadow-border;
+    border-radius: 4px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    font-size: 0;
+    &._default{
+      border-color: transparent;
+      box-shadow: inset 0 0 1px 1px $shadow-border;
+      background-image: url('/assets/img/icons/photo-camera_g.svg');
+      background-size: 30%;
+    }
+
+  }
+  .template-place-list-item__info{
+    margin-left: 24px;
+    flex-basis: calc(100% - 24px - 180px);
+  }
+  .template-place-list-item-info{
+    padding-bottom: 28px;
+    padding-top: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+    .template-place-list-item-info__name{
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 500;
+      letter-spacing: 0.25px;
+      color: $black_a;
+      span{
+        cursor: pointer;
+        &:hover{
+          text-decoration: underline;
+        }
+      }
+    }
+    .template-place-list-item-info__text{
+      font-size: 12px;
+      line-height: 1.4;
+      letter-spacing: 0.4px;
+      color: $dark;
+      margin-top: 2px;
+    }
+    .template-place-list-item-info__counter{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  }
+}

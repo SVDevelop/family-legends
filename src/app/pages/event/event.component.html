@@ -1,0 +1,31 @@
+<div class="uk-container l-container page-content page-event">
+  <div class="l-left">
+    <app-inside-menu [activeMenu]="'event'"></app-inside-menu>
+  </div>
+  <div class="l-center">
+    <div class="feed-item feed-person-list">
+      <div class="feed-item__title">События</div>
+      <div class="feed-place-list-items _event-list">
+        <ng-container *ngIf="!eventsAll || eventsAll.length === 0">
+          <span class="feed-not-item-text">Добавьте новое событие</span>
+        </ng-container>
+        <ng-container *ngFor="let eventItem of eventsAll; trackBy: trackByEvents">
+          <app-list-item-place-event class="app-list-item-place-event" [itemTemplate]="eventItem" [itemType]="'event'"></app-list-item-place-event>
+        </ng-container>
+        <ng-container *ngIf="isViewMore">
+          <app-view-more-list-feed (onGetMore)="getMore()"></app-view-more-list-feed>
+        </ng-container>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="l-right">
+    <app-info-widget [type]="'newFeedButton'"  [classButton]="'_event'"  [itemWidget]="'event'"></app-info-widget>
+  </div>
+</div>
+
+<!--<div class="feed-persons uk-flex uk-flex-middle">-->
+<!--  <div class="feed-persons-avatars"></div>-->
+<!--  <div class="feed-persons-names"> <span> dsada</span></div>-->
+<!--</div>-->

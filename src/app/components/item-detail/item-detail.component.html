@@ -1,0 +1,41 @@
+<div class="page-headline">
+  <div class="uk-container l-container page-content page-persons">
+    <div class="l-left">
+      <ng-container *ngIf="(personEditStore$|async).status === 1">
+        <div class="g-back-button" [routerLink]="['/person']">
+          <div class="g-back-button__item"></div>
+          <div class="g-back-button__text"> Персоны</div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="(personEditStore$|async).status === 2">
+        <div class="g-back-button" [routerLink]="['/person',idItem]">
+          <div class="g-back-button__item"></div>
+          <div class="g-back-button__text"> Отменить</div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="l-center">
+      <ng-container *ngIf="itemDetail; else NotDetailInfoPerson">
+        <app-item-headline [itemDetail]="itemDetail"></app-item-headline>
+      </ng-container>
+      <ng-template #NotDetailInfoPerson>
+        <div class="item-is-empty">Информация отсутствует...</div>
+      </ng-template>
+    </div>
+    <div class="l-right">
+      <ng-container *ngIf="itemDetail">
+        <ng-container *ngIf="itemDetail.can_edit">
+          <ng-container *ngIf="(personEditStore$|async).status">
+            <ng-container *ngIf="(personEditStore$|async).status === 1">
+              <button mat-raised-button class="button button-edit button-inline button-flat button-primary button-transparent small _wide _default"
+                     (click)="onGoEdit(itemDetail.id)">Редактировать</button>
+            </ng-container>
+          </ng-container>
+
+<!--          <button class="button button-edit button-inline button-flat button-primary button-transparent small"> Редактировать </button>-->
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

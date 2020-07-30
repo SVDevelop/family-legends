@@ -1,0 +1,44 @@
+.left-menu{
+  a, .left-menu__item {
+    cursor: pointer;
+    img{
+      position: absolute;
+      left: 10px;
+      top: 11px;
+      opacity: 0.35;
+      display: block;
+    }
+    img._active{
+      display: none;
+    }
+    &.to-feed img {
+      left: 10px;
+      top: 10px;
+    }
+    &.to-persons img {
+      left: 10px;
+      top: 11px;
+    }
+    &.to-places img {
+      left: 13px;
+      top: 11px;
+    }
+    &.to-events img {
+      left: 11px;
+      top: 11px;
+    }
+    &:hover, &:acitve, &._active{
+      text-decoration: underline;
+    }
+    &._active{
+      font-weight: bold;
+      img {
+        display: none;
+      }
+      img._active{
+          display: block;
+          opacity: 1;
+      }
+    }
+  }
+}

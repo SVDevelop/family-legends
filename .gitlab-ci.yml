@@ -1,0 +1,130 @@
+stages:
+  - before
+  - build
+  - deploy
+  - after
+
+variables:
+  HOST: deploy@sand.inet.name
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE
+  DOCKER_REGISTRY: $CI_REGISTRY
+  DOCKER_USER: $CI_REGISTRY_USER
+  DOCKER_PASSWORD: $CI_REGISTRY_PASSWORD
+
+services:
+  - docker:dind
+
+build-dev:
+  stage: build
+  only:
+    - master
+  script:
+    - make build-dev
+    - make push-dev
+
+build-test:
+  stage: build
+  only:
+    - master
+    - /^v[0-9]+(?:.[0-9]+)+/
+    - /^release-[0-9]+(?:.[0-9]+)+/
+  script:
+    - make build-test
+    - make push-test
+
+build-prod:
+  stage: build
+  only:
+    - /^release-[0-9]+(?:.[0-9]+)+$/
+  script:
+    - make build-prod
+    - make push-prod
+
+update-dev:
+  stage: deploy
+  only:
+    - master
+  script:
+    - ssh $HOST "
+      echo $DOCKER_USER - $DOCKER_PASSWORD - $DOCKER_REGISTRY - $DOCKER_IMAGE
+      && cd /data/dev.ft.inet.name
+      && docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+      && docker pull ${DOCKER_IMAGE}/dev
+      && docker-compose up -d --remove-orphans"
+  environment:
+    name: dev
+    url: https://dev.ft.inet.name
+
+update-test:
+  stage: deploy
+  only:
+    - master
+    - /^v[0-9]+(?:.[0-9]+)+$/
+    - /^release-[0-9]+(?:.[0-9]+)+$/
+  script:
+    - ssh $HOST "
+      echo $DOCKER_USER - $DOCKER_PASSWORD - $DOCKER_REGISTRY - $DOCKER_IMAGE
+      && cd /data/test.ft.inet.name
+      && docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+      && docker pull ${DOCKER_IMAGE}/test
+      && docker-compose up -d --remove-orphans"
+    - >
+      curl -X POST https://mon.et.inet.name/api/annotations/graphite \
+        -H "Accept: application/json" \
+        -H "Authorization: Bearer $GRAFANA_API_KEY" \
+        -H "Cache-Control: no-cache" \
+        -H "Content-Type: application/json" \
+        -d '{"what":"Deploy new version", "tags": ["ft-test-deploy", "'$CI_PROJECT_NAME'", "'$CI_PROJECT_NAMESPACE'", "'$CI_COMMIT_REF_NAME'"], "when": '$(date +%s)'}'
+  environment:
+    name: test
+    url: https://test.ft.inet.name
+
+sentry-init:
+  stage: before
+  allow_failure: true
+  only:
+    - master
+  script:
+    - export SENTRY_PROJECT=${CI_PROJECT_PATH//\//-}
+    - echo "create $SENTRY_PROJECT sentry project"
+    - echo "https://${SENTRY_URL}/api/0/teams/${SENTRY_ORG}/${SENTRY_TEAM}/projects/"
+    - >
+      code=$(curl -s -o /dev/null -w "%{response_code}" \
+        -H "Authorization: Bearer ${SENTRY_AUTH_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -d "{\"slug\":\"$SENTRY_PROJECT\", \"name\":\"$SENTRY_PROJECT\"}" \
+        -X POST https://${SENTRY_URL}/api/0/teams/${SENTRY_ORG}/${SENTRY_TEAM}/projects/)
+    - if [ "$code" -ne "409" ]; then if [ "$code" -ne "201" ]; then echo "unexpected sentry code $code"; exit; else echo "project $SENTRY_PROJECT created"; fi else echo "project $SENTRY_PROJECT exist"; fi;
+    - >
+      export SENTRY_DSN=$(curl -s -H "Authorization: Bearer ${SENTRY_AUTH_TOKEN}" \
+        -X GET https://${SENTRY_URL}/api/0/projects/${SENTRY_ORG}/${SENTRY_PROJECT}/keys/ | sed 's/^.*"dsn".*"public": "\(http.*\)".*/\1/' | cut -f1 -d"\"")
+    - echo "sentry project public dsn $SENTRY_DSN"
+#    - mkdir -p /tmp/$SERVICE_NAME
+#    - echo $sentry_dsn > /tmp/$SERVICE_NAME/dsn
+
+sentry-release:
+  image:
+    name: getsentry/sentry-cli
+    entrypoint: [""]
+  stage: after
+  allow_failure: true
+  only:
+    - master
+    - /^release-[0-9]+(?:.[0-9]+)+$/
+  script:
+    #    - curl -sL -k https://sentry.io/get-cli/ | bash
+    - echo $PATH
+    - echo "create a new release $CI_COMMIT_SHA"
+    - export SENTRY_URL=https://$SENTRY_URL
+    - export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+    - export SENTRY_ORG=$SENTRY_ORG
+    - export SENTRY_PROJECT=${CI_PROJECT_PATH//\//-}
+    - echo "sentry org $SENTRY_ORG"
+    - echo "sentry project $SENTRY_PROJECT"
+    - export SENTRY_DISABLE_UPDATE_CHECK=true
+    - sentry-cli releases new $CI_PROJECT_NAME@$CI_COMMIT_SHA --log-level debug
+    - sentry-cli releases set-commits --auto $CI_COMMIT_SHA --log-level debug
+    - sentry-cli releases finalize $CI_COMMIT_SHA --log-level debug
+    - echo "finalized release for $CI_PROJECT_NAME@$CI_COMMIT_SHA"
+
+include: '.gitlab-ci-global.yml'

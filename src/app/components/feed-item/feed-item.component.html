@@ -1,0 +1,107 @@
+<ng-container *ngIf="typeItem === 'newCreateFeedItem'">
+  <div class="feed-item new-feed-item">
+    <div class="new-items uk-flex uk-child-width-expand">
+      <div class="new-item new-person">
+        <img class="button-icon _opacity" src="assets/img/icons/new-person.svg" width="30" height="22">
+        <span [routerLink]="['/person', 'new']">Новая персона</span>
+      </div>
+      <div class="new-item new-place">
+        <img class="button-icon _opacity" src="assets/img/icons/place.svg" width="16" height="22">
+        <span [routerLink]="['/places', 'new']">Новое место</span>
+      </div>
+      <div class="new-item new-event">
+        <img class="button-icon _opacity" src="assets/img/icons/new-event.svg" width="20" height="24">
+        <span [routerLink]="['/event', 'new']">Новое событие</span>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="typeItem === 'feedNote'">
+  <div class="feed-item feed-event">
+    <div class="avatar-feed-author uk-flex">
+      <div class="avatar-with-icon">
+        <ng-container *ngIf="(dataFeed.person_creater.attachment | attachImage); else elseNotImageNote">
+            <ng-container *ngIf="dataFeed.person_creater.attachment.url">
+              <div  class="avatar avatar-def" [ngStyle]="{'background-image': 'url('+ dataFeed.person_creater.attachment.url + ')'}"></div>
+            </ng-container>
+        </ng-container>
+        <ng-template #elseNotImageNote>
+          <img class="avatar _default" src="assets/img/icons/persons.svg"
+               width="26" height="26">
+        </ng-template>
+        <div class="avatar-icon icon-record"><img src="assets/img/icons/edit_w.svg" width="9" height="9"></div>
+
+      </div>
+      <div class="avatar-feed-author-text">
+        <a href="#" onclick="return false" [routerLink]="['/person', dataFeed.created_by]" class="avatar-feed-author-name">{{dataFeed.person_creater.first_name||'Пользователь'}} {{dataFeed.person_creater.surname||''}}</a>
+        <ng-container *ngIf="dataFeed.updated_at; else elseNotUpdateDAte">
+          <small class="gray">Запись обновлена •
+            <span class="time-readable">{{dataFeed.updated_at | date:'dd.MM.yyyy, HH:mm' }}</span>
+          </small>
+        </ng-container>
+        <ng-template #elseNotUpdateDAte>
+          <small class="gray">Запись создана •
+            <span class="time-readable">{{dataFeed.created_at | date:'dd.MM.yyyy, HH:mm' }}</span>
+          </small>
+        </ng-template>
+      </div>
+    </div>
+    <div class="feed-router-e-wrapper">
+      <ng-container *ngIf="dataFeed.attachments">
+        <ng-container *ngIf="dataFeed.attachments | attachImages ">
+          <div class="feed-medias feed-medias-{{dataFeed.attachments.length}}"
+               [ngClass]="'feed-medias-'+ (dataFeed.attachments | attachImages).length">
+
+            <ng-container *ngIf="(dataFeed.attachments | attachImages).length >= 1">
+              <div class="feed-media-main">
+                <div class="feed-media" [ngStyle]="{ 'background-image': 'url(' + (dataFeed.attachments | attachImages)[0].url +')'}"></div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="(dataFeed.attachments | attachImages).length >= 2">
+              <div class="feed-media-column">
+                <ng-container *ngFor="let itemColumn of (dataFeed.attachments | attachImages); index as index">
+                  <ng-container *ngIf="index > 0 && index < 4">
+                    <div class="feed-media" [ngStyle]="{ 'background-image': 'url(' + itemColumn.url +')'}"></div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="(dataFeed.attachments | attachImages).length >= 5">
+              <div class="feed-media-row">
+                <ng-container *ngFor="let itemRow of (dataFeed.attachments | attachImages); index as index">
+                  <ng-container *ngIf="index >= 4 ">
+                    <div class="feed-media" [ngStyle]="{ 'background-image': 'url(' + itemRow.url +')'}"></div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+      <div class="feed-description">{{dataFeed.text}}</div>
+      <!--    <div class="feed-description sep-bottom">{{dataFeed.text}}</div>-->
+      <!--    <div class="feed-persons uk-flex uk-flex-middle">-->
+      <!--      <div class="feed-persons-avatars"><a href="/person/ivan" class="avatar">-->
+      <!--        <img class="avatar avatar-mini" src="img/avatar/test0.png" alt="Иван" width="24" height="24">-->
+      <!--        <span class="avatar-hover-name">Иван</span></a><a href="/person/oleg" class="avatar"><img class="avatar avatar-mini" src="img/avatar/test2.png" alt="Олег" width="24" height="24">-->
+      <!--        <span class="avatar-hover-name">Олег</span></a><a href="/person/olga" class="avatar"><img class="avatar avatar-mini" src="img/avatar/test4.png" alt="Ольга" width="24" height="24">-->
+      <!--        <span class="avatar-hover-name">Ольга</span></a>-->
+      <!--      </div>-->
+      <!--      <div class="feed-persons-names">&lt;!&ndash; react-text: 87 &ndash;&gt;Отмечены: &lt;!&ndash; /react-text &ndash;&gt;-->
+      <!--         <span class="inline-list">-->
+      <!--        <span>&lt;!&ndash; react-text: 90 &ndash;&gt;&lt;!&ndash; /react-text &ndash;&gt;-->
+      <!--        <span><a href="/person/ivan">Иван</a></span></span><span>&lt;!&ndash; react-text: 94 &ndash;&gt;, &lt;!&ndash; /react-text &ndash;&gt;-->
+      <!--        <span><a href="/person/oleg">Олег</a></span></span><span>&lt;!&ndash; react-text: 98 &ndash;&gt; и &lt;!&ndash; /react-text &ndash;&gt;-->
+      <!--        <span><a href="/person/olga">Ольга</a></span></span></span>-->
+      <!--      </div>-->
+      <!--    </div>-->
+      <!--    <a href="/place/5" class="feed-place expand-clickable orange">-->
+      <!--        <svg viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg" width="11" height="13"><path d="M6.00008 7.00004C6.73341 7.00004 7.33341 6.40004 7.33341 5.66671C7.33341 4.93337 6.73341 4.33337 6.00008 4.33337C5.26675 4.33337 4.66675 4.93337 4.66675 5.66671C4.66675 6.40004 5.26675 7.00004 6.00008 7.00004ZM6.00008 0.333374C8.80008 0.333374 11.3334 2.48004 11.3334 5.80004C11.3334 7.92004 9.70008 10.4134 6.44008 13.2867C6.18675 13.5067 5.80675 13.5067 5.55341 13.2867C2.30008 10.4134 0.666748 7.92004 0.666748 5.80004C0.666748 2.48004 3.20008 0.333374 6.00008 0.333374Z" fill="currentColor"></path></svg>-->
+      <!--        <small>Имение семьи Сидоровых</small>-->
+      <!--    </a>-->
+      <!--    <div class="feed-comments feed-comments-collapsed expand-clickable a green"> Комментарии (5) </div>-->
+      <div class="feed-router-e" [routerLink]="['/feed', dataFeed.id]"></div>
+    </div>
+  </div>
+</ng-container>

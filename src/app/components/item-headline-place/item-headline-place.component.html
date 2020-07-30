@@ -1,0 +1,39 @@
+<div class="headline">
+  <ng-container *ngIf="itemDetail">
+    <ng-container *ngIf="itemDetail.attachment | attachImage; else elseNotImagePlaceDetailMain">
+        <ng-container *ngIf="itemDetail.attachment.url">
+          <div class="avatar avatar-headline  _not-person" [ngStyle]="{'background-image': 'url('+ itemDetail.attachment.url + ')'}"></div>
+      </ng-container>
+    </ng-container>
+    <ng-template #elseNotImagePlaceDetailMain>
+      <div class="avatar avatar-headline _not-person _default"></div>
+    </ng-template>
+  </ng-container>
+  <div class="headline-content">
+    <ng-container *ngIf="itemDetail">
+      <h1 >{{itemDetail.name || 'Место'}}</h1>
+      <ul class="headline-facts small">
+        <li class="facts-avatar">
+          <ng-container *ngIf="itemDetail.person_creater.attachment| attachImage; else elseNotImagePersonDetail">
+              <ng-container *ngIf="itemDetail.person_creater.attachment.url">
+                <div class="headline-facts__image avatar avatar-headline" [ngStyle]="{'background-image': 'url('+ itemDetail.person_creater.attachment.url + ')'}"></div>
+              </ng-container>
+          </ng-container>
+          <ng-template #elseNotImagePersonDetail>
+            <div class="headline-facts__image avatar avatar-headline _default"></div>
+          </ng-template>
+          <ng-container *ngIf="itemDetail.person_creater">
+            <span>Автор {{itemDetail.person_creater.first_name || ''}} {{'&nbsp;•&nbsp;'+(itemDetail.created_at|date:'dd.MM.yyyy')}}</span>
+          </ng-container>
+        </li>
+        <ng-container *ngIf="itemDetail.address">
+          <li class="place">
+            <img class="headline-facts__image" src="/assets/img/icons/pin.svg" width="16" height="16">
+            {{itemDetail.address}}
+          </li>
+        </ng-container>
+      </ul>
+      <ng-container *ngIf="itemDetail.text"> <p class="mb0">{{itemDetail.text}}</p> </ng-container>
+    </ng-container>
+  </div>
+</div>

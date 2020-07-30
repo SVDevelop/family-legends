@@ -1,0 +1,15 @@
+<div class="uk-container l-container page-content page-note-detail">
+  <div class="l-left">
+    <div class="g-back-button" [routerLink]="['/feed']">
+      <div class="g-back-button__item"></div>
+      <div class="g-back-button__text"> Лента</div>
+    </div>
+  </div>
+  <div class="l-center">
+    <ng-container>
+      <app-new-note-form></app-new-note-form>
+    </ng-container>
+  </div>
+  <div class="l-right"></div>
+</div>
+<router-outlet></router-outlet>

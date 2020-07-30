@@ -1,0 +1,37 @@
+<div class="uk-container l-container page-content">
+  <div class="l-left">
+    <app-inside-menu [activeMenu]="'feed'"></app-inside-menu>
+  </div>
+  <div class="l-center">
+    <app-feed-item [type]="'newCreateFeedItem'"></app-feed-item>
+
+    <ng-container *ngFor="let feed of feedAll">
+      <!-- NOTE -->
+      <ng-container *ngIf="feed.type === 'note'">
+        <app-feed-item class="feed-item-wrapper" [type]="'feedNote'" [dataFeedNote]="feed"></app-feed-item>
+      </ng-container>
+      <!-- END --- NOTE -->
+
+      <!-- PERSON -->
+        <ng-container *ngIf="feed.type === 'person'">
+          <app-feed-item-person [dataFeedPerson]="feed"></app-feed-item-person>
+        </ng-container>
+      <!-- END -- PERSON -->
+
+      <!-- PLACE -->
+      <ng-container *ngIf="feed.type === 'place'">
+        <app-feed-item-place [dataFeedPlace]="feed"></app-feed-item-place>
+      </ng-container>
+      <!-- END -- PLACE -->
+
+      <!-- EVENT -->
+      <ng-container *ngIf="feed.type === 'event'">
+        <app-feed-item-event [dataFeedEvent]="feed"></app-feed-item-event>
+      </ng-container>
+      <!-- END -- EVENT -->
+    </ng-container>
+  </div>
+  <div class="l-right">
+    <app-info-widget [type]="'newFeedButton'"  [classButton]="'_note'" [itemWidget]="'note'"></app-info-widget>
+  </div>
+</div>

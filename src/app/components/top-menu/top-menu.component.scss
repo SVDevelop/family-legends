@@ -1,0 +1,32 @@
+@import "../../../variables";
+
+@keyframes topMenuFade {
+  0%{
+    visibility: hidden;
+    opacity: 0;
+  }
+  90%{
+    visibility: visible;
+  }
+  100%{
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.drop-down{
+  cursor: pointer;
+}
+.top-menu{
+  opacity: 0;
+  visibility: hidden;
+  transition: all $transition;
+  animation: topMenuFade .5s ease-out 1s forwards;
+}
+.top-menu .profile-menu._active .drop-down::before {
+  transform: translate(1.5px, -2px) rotate(-45deg) scale(1, 1.25);
+}
+.top-menu .profile-menu._active .drop-down::after {
+  transform: translate(6.5px, -2px) rotate(45deg) scale(1, 1.25);
+}
+

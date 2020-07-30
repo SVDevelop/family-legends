@@ -1,0 +1,22 @@
+<!--<ul>-->
+<!--  <li>-->
+<!--    <button routerLink="/feed">FEED</button>-->
+<!--  </li>-->
+<!--  <li>-->
+<!--    <button routerLink="/person">PERSON</button>-->
+<!--  </li>-->
+<!--  <li>-->
+<!--    <button routerLink="/places">PLACES</button>-->
+<!--  </li>-->
+<!--  <li>-->
+<!--    <button routerLink="/event">event</button>-->
+<!--  </li>-->
+<!--</ul>-->
+<!--<router-outlet></router-outlet>-->
+
+<div id="family-legends" class="app-fullbody">
+  <div class="page" class="{{getClassPAge()}}">
+    <app-top-menu *ngIf="checkVisibleTopMenu(pageRouteStart)"></app-top-menu>
+    <router-outlet></router-outlet>
+  </div>
+</div>

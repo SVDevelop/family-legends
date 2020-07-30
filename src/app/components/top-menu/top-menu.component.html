@@ -1,0 +1,68 @@
+<nav class="top-menu">
+  <div class="uk-container l-container">
+    <div class="l-left">
+      <a routerLink="/" class="logo">
+        <img src="assets/img/logo.svg" width="111" height="32" alt="Семейные легенды">
+      </a>
+    </div>
+    <div class="l-center">
+<!--      <label class="search">-->
+<!--        <input name="search" class="search" placeholder="Поиск">-->
+<!--        <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" fill="currentcolor" width="18" height="18">-->
+<!--          <path fill-rule="evenodd" clip-rule="evenodd" fill="currentcolor" d="M12.5 11H11.71L11.43 10.73C12.41 9.59 13 8.11 13 6.5C13 2.91 10.09 0 6.5 0C2.91 0 0 2.91 0 6.5C0 10.09 2.91 13 6.5 13C8.11 13 9.59 12.41 10.73 11.43L11 11.71V12.5L16 17.49L17.49 16L12.5 11ZM6.5 11C4.01 11 2 8.99 2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5C11 8.99 8.99 11 6.5 11Z"></path></svg>-->
+<!--      </label>-->
+    </div>
+    <div class="l-right profile-menu uk-flex uk-flex-right uk-flex-middle" [ngClass]="{'_active': isOpen}" >
+      <span style="cursor:pointer;" routerLink="/profile-edit">{{(app$ | async)?.profilePerson?.first_name || 'USER'}}</span>
+<!--      <img class="avatar avatar-small" src="assets/img/avatar/test1.png" width="30" height="30">-->
+      <ng-container *ngIf="(app$ | async)?.profilePerson?.attachment?.url ; else elseNotImageProfile">
+        <ng-container
+          *ngIf="(app$ | async)?.profilePerson?.attachment?.content_type === 'image/png' || (app$ | async)?.profilePerson?.attachment?.content_type === 'image/jpeg'; else elseNotImageProfile"
+        >
+          <div class="avatar avatar-small"
+               [ngStyle]="{
+         'background-image': 'url(' + (app$ | async)?.profilePerson?.attachment?.url+')',
+         'background-size': 'cover',
+         'background-position': 'center',
+         'background-repeat': 'no-repeat',
+         'border-radius': '50%',
+         'width.px': 30,
+         'height.px': 30
+         }"
+          ></div>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #elseNotImageProfile>
+        <div class="avatar avatar-small"
+             [ngStyle]="{
+              'background-image': 'url(assets/img/icons/persons.svg)',
+               'background-color': '#fff',
+               'padding.px': 7,
+               'box-sizing': 'border-box',
+               'border-radius': '50%',
+               'background-size': '50%',
+               'background-position': 'center',
+               'background-repeat': 'no-repeat',
+               'width.px': 30,
+               'height.px': 30
+               }"
+             width="15" height="15"></div></ng-template>
+<!--      <div class="drop-down"></div>-->
+      <ng-container>
+        <div class="drop-down" mat-button [matMenuTriggerFor]="menu" (menuOpened)="setOpenMenuFlag()" (menuClosed)="setCloseMenuFlag()"></div>
+<!--        <button class="drop-down" mat-button [matMenuTriggerFor]="menu"></button>-->
+        <mat-menu #menu="matMenu" xPosition="before">
+<!--          <button mat-menu-item>Настройки профиля</button>-->
+<!--          <button mat-menu-item>Поддержка</button>-->
+          <button mat-menu-item (click)="onLogOut()">Выйти</button>
+        </mat-menu>
+      </ng-container>
+    </div>
+
+  </div>
+  <mat-progress-bar mode="indeterminate" *ngIf="(app$ | async)?.isLoader"></mat-progress-bar>
+  <ng-container  *ngIf="(app$ | async)?.isLoader">
+    <div class="mat-progress-bar-background"></div>
+  </ng-container>
+</nav>

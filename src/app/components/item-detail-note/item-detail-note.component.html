@@ -1,0 +1,42 @@
+<div class="uk-container l-container page-content page-note-detail">
+  <div class="l-left">
+    <ng-container *ngIf="(noteEditStore$|async).status === 1">
+      <div class="g-back-button" [routerLink]="['/feed']">
+        <div class="g-back-button__item"></div>
+        <div class="g-back-button__text"> Лента</div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="(noteEditStore$|async).status === 2">
+      <div class="g-back-button" [routerLink]="['/feed',idItem]">
+        <div class="g-back-button__item"></div>
+        <div class="g-back-button__text"> Отменить</div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="l-center">
+    <ng-container *ngIf="itemDetail; else NotDetailInfoEvent">
+      <ng-container *ngIf="(noteEditStore$|async).status">
+        <ng-container *ngIf="(noteEditStore$|async).status === 1">
+          <app-feed-item class="feed-item-wrapper" [type]="'feedNote'" [dataFeedNote]="itemDetail"></app-feed-item>
+        </ng-container>
+      </ng-container>
+
+    </ng-container>
+    <ng-template #NotDetailInfoEvent>
+      <div class="item-is-empty">Информация отсутствует...</div>
+    </ng-template>
+  </div>
+  <div class="l-right">
+    <ng-container *ngIf="itemDetail">
+      <ng-container *ngIf="itemDetail.can_edit">
+        <ng-container *ngIf="(noteEditStore$|async).status">
+          <ng-container *ngIf="(noteEditStore$|async).status === 1">
+            <button mat-raised-button class="button button-edit button-inline button-flat button-primary button-transparent small _wide _default"
+                    (click)="onGoEdit(itemDetail.id)">Редактировать</button>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+<router-outlet></router-outlet>

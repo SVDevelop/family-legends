@@ -1,0 +1,28 @@
+<div class="uk-container l-container page-content page-places">
+  <div class="l-left">
+    <app-inside-menu [activeMenu]="'places'"></app-inside-menu>
+  </div>
+  <div class="l-center">
+    <div class="feed-item feed-person-list ">
+      <div class="feed-item__title">Места</div>
+      <div class="feed-place-list-items _place-list">
+        <ng-container *ngIf="!placesAll || placesAll.length === 0">
+          <span class="feed-not-item-text">Добавьте новое место</span>
+        </ng-container>
+        <ng-container *ngFor="let place of placesAll">
+          <app-list-item-place-event class="app-list-item-place-event" [itemTemplate]="place" [itemType]="'place'"></app-list-item-place-event>
+        </ng-container>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="l-right">
+    <app-info-widget [type]="'newFeedButton'" [classButton]="'_place'"  [itemWidget]="'places'"></app-info-widget>
+  </div>
+</div>
+
+<!--<div class="feed-persons uk-flex uk-flex-middle">-->
+<!--  <div class="feed-persons-avatars"></div>-->
+<!--  <div class="feed-persons-names"> <span> dsada</span></div>-->
+<!--</div>-->

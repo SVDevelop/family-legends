@@ -1,0 +1,146 @@
+<div class="new-item-create">
+  <div class="new-item-create__inner">
+    <div class="new-item-create__title _person">Редактирование персоны</div>
+    <div class="new-item-create__form">
+
+      <form autocomplete="off"
+            novalidate
+            [formGroup]="editPersonForm"
+            (ngSubmit)="ngSubmit()"
+            [ngClass]="{'_is-validation': isValidateRun}"
+      >
+        <div class="new-item-create-form _has-wide-row _column-2-60">
+          <div class="new-item-create-form__column">
+            <div class="new-item-create-form__row">
+              <mat-form-field>
+                <mat-label>Фамилия</mat-label>
+                <input autocomplete="off" matInput required formControlName="surName"
+                       type="text"  minlength="2" aria-label="surName" placeholder=""
+                >
+                <mat-error *ngIf="hasError('editPersonForm','surName', 'required')">
+                  {{getErrorMessage('surName', 'required')}}
+                </mat-error>
+                <mat-error
+                  *ngIf="hasError('editPersonForm','surName', 'minlength')">
+                  {{getErrorMessage('surName', 'invalid')}}
+                </mat-error>
+                <mat-error
+                  *ngIf="hasError('editPersonForm','surName', 'back')">
+                  {{getErrorMessage('surName', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="new-item-create-form__row">
+              <mat-form-field>
+                <mat-label>Имя</mat-label>
+                <input autocomplete="off" matInput required formControlName="firstName"
+                       type="text"  minlength="2" aria-label="firstName" placeholder=""
+                >
+                <mat-error *ngIf="hasError('editPersonForm','firstName', 'required')">
+                  {{getErrorMessage('firstName', 'required')}}
+                </mat-error>
+                <mat-error
+                  *ngIf="hasError('editPersonForm','firstName', 'minlength')">
+                  {{getErrorMessage('firstName', 'invalid')}}
+                </mat-error>
+                <mat-error
+                  *ngIf="hasError('editPersonForm','firstName', 'back')">
+                  {{getErrorMessage('firstName', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="new-item-create-form__row _column2">
+              <div class="new-item-create-form__row-col">
+                <mat-form-field class="mat-date-picker-field">
+                  <mat-label>Дата рождения</mat-label>
+                  <input autocomplete="off" name="birthDate"  aria-label="birthDate" readonly
+                         matInput [matDatepicker]="picker" formControlName="birthDate" required minlength="10" maxlength="10">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <mat-error *ngIf="hasError('editPersonForm','birthDate', 'required')">
+                    {{getErrorMessage('birthDate', 'required')}}
+                  </mat-error>
+                  <mat-error *ngIf="hasError('editPersonForm', 'birthDate','birthDate')
+                    || hasError('editPersonForm','birthDate', 'maxlength')">
+                    {{getErrorMessage('birthDate', 'invalid')}}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="new-item-create-form__row-col">
+                <mat-form-field class="mat-date-picker-field">
+                  <mat-label>Дата смерти</mat-label>
+                  <input autocomplete="off" name="deathDate"  aria-label="deathDate" readonly
+                         matInput [matDatepicker]="pickerr" formControlName="deathDate" minlength="10" maxlength="10">
+                  <mat-datepicker-toggle matSuffix [for]="pickerr"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerr></mat-datepicker>
+                  <mat-error *ngIf="hasError('editPersonForm','deathDate', 'maxlength')">
+                    {{getErrorMessage('deathDate', 'invalid')}}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="new-item-create-form__row">
+              <span class="mat-radio-group__gender"> Пол *: </span>
+              <mat-radio-group aria-label="Пол" autocomplete="off" formControlName="sex" >
+                <mat-radio-button [value]="1" >Мужской</mat-radio-button>
+                <mat-radio-button [value]="0" >Женский</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+
+          <div class="new-item-create-form__column">
+            <div class="new-item-create-form__image-wrap"
+                 [ngClass]="{'_error': hasError('editPersonForm', 'file','back')}"
+            >
+              <div class="new-item-create-form__image"
+                   [ngStyle]="{'background-image': 'url('+ imageUrl + ')'}"
+                   [ngClass]="{'_error': hasError('editPersonForm', 'file','back')}"
+              >
+                <ng-container *ngIf="!imageUrl">
+                  <div class="new-item-create-form__image-default _person">Фото персоны</div>
+                </ng-container>
+                <ng-container *ngIf="imageUrl">
+                  <div class="new-item-create-form__image-x _update" (click)="photoPersonUpload.click()"></div>
+                </ng-container>
+                <ng-container *ngIf="!imageUrl">
+                  <label for="photoPersonUpload" class="new-item-create-form__image-label"></label>
+                </ng-container>
+                <input type="file" formControlName="file"
+                       #photoPersonUpload id="photoPersonUpload"
+                       name="attachment" multiple="false" accept="image/jpeg,image/png, image/x-png"
+                       (change)="onFileChange($event)" style="display:none;"/>
+
+              </div>
+              <div class="new-item-create-form__image-error"> Некорректный формат изображения </div>
+            </div>
+          </div>
+
+          <div class="new-item-create-form__column _wide">
+            <div class="new-item-create-form__row">
+              <mat-form-field class="mat-form-field-textarea">
+                <mat-label>Описание</mat-label>
+                <textarea matInput
+                          cdkAutosizeMinRows="4"
+                          cdkAutosizeMaxRows="4"
+                          rows="4"
+                          formControlName="text"
+                ></textarea>
+                <mat-error
+                  *ngIf="hasError('editPersonForm','text', 'back')">
+                  {{getErrorMessage('text', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="new-item-create-form__row">
+              <button class="new-item-create-button" type="submit"
+                      [disabled]="checkValidFormDisable()"
+              > Сохранить </button>
+<!--              <button class="new-item-create-button" type="submit"-->
+<!--              > Сохранить </button>-->
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

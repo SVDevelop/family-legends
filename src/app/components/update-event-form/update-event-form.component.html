@@ -1,0 +1,103 @@
+<div class="new-item-create">
+  <div class="new-item-create__inner">
+    <div class="new-item-create__title _event">Редактирование событие</div>
+    <div class="new-item-create__form">
+
+      <form autocomplete="off"
+            [formGroup]="editEventForm"
+            (ngSubmit)="ngSubmit()">
+        <div class="new-item-create-form _has-wide-row _column-2">
+          <div class="new-item-create-form__column">
+            <div class="new-item-create-form__row">
+              <mat-form-field>
+                <mat-label>Название события</mat-label>
+                <input autocomplete="off" matInput required formControlName="name"
+                       type="text"  minlength="1" aria-label="name" placeholder=""
+                >
+                <mat-error *ngIf="hasError('editEventForm','name', 'required')">
+                  {{getErrorMessage('name', 'required')}}
+                </mat-error>
+                <mat-error
+                  *ngIf="hasError('editEventForm','name', 'minlength')">
+                  {{getErrorMessage('name', 'invalid')}}
+                </mat-error>
+                <mat-error
+                  *ngIf="hasError('editEventForm','name', 'back')">
+                  {{getErrorMessage('name', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="new-item-create-form__row">
+              <mat-form-field class="mat-form-field-textarea">
+                <mat-label>Описание события</mat-label>
+                <textarea matInput
+                          cdkAutosizeMinRows="6"
+                          cdkAutosizeMaxRows="6"
+                          rows="6"
+                          formControlName="text"
+                ></textarea>
+                <mat-error
+                  *ngIf="hasError('editEventForm','text', 'back')">
+                  {{getErrorMessage('text', 'back')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="new-item-create-form__row-col">
+              <mat-form-field class="mat-date-picker-field">
+                <mat-label>Дата события</mat-label>
+                <input autocomplete="off" name="date_event"  aria-label="date_event" readonly
+                       matInput [matDatepicker]="picker" formControlName="date_event" minlength="10" maxlength="10">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="hasError('editEventForm','date_event', 'required')">
+                  {{getErrorMessage('date_event', 'required')}}
+                </mat-error>
+                <mat-error *ngIf="hasError('editEventForm', 'date_event','date_event')
+                  || hasError('editEventForm','date_event', 'maxlength')">
+                  {{getErrorMessage('date_event', 'invalid')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+          </div>
+
+          <div class="new-item-create-form__column">
+            <div class="new-item-create-form__image-wrap"
+                 [ngClass]="{'_error': hasError('editEventForm', 'file','back')}"
+            >
+              <div class="new-item-create-form__image"
+                   [ngStyle]="{'background-image': 'url('+ imageUrl + ')'}"
+                   [ngClass]="{'_error': hasError('editEventForm', 'file','back')}"
+              >
+                <ng-container *ngIf="!imageUrl">
+                  <div class="new-item-create-form__image-default _person">Фото события</div>
+                </ng-container>
+                <ng-container *ngIf="imageUrl">
+                  <div class="new-item-create-form__image-x _update" (click)="photoEventUpload.click()"></div>
+                </ng-container>
+                <ng-container *ngIf="!imageUrl">
+                  <label for="photoEventUpload" class="new-item-create-form__image-label"></label>
+                </ng-container>
+                <input type="file" formControlName="file"
+                       #photoEventUpload id="photoEventUpload"
+                       name="attachment" multiple="false" accept="image/jpeg,image/png"
+                       (change)="onFileChange($event)" style="display:none;"/>
+
+              </div>
+              <div class="new-item-create-form__image-error"> Некорректный формат изображения </div>
+            </div>
+
+          </div>
+
+          <div class="new-item-create-form__column _wide">
+            <div class="new-item-create-form__row">
+              <button class="new-item-create-button" type="submit"
+                      [disabled]="checkValidFormDisable()"
+              > Сохранить </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

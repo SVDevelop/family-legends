@@ -1,0 +1,42 @@
+<div class="feed-place-list-items__row">
+  <div class="template-place-list-item">
+    <ng-container *ngIf="itemTemplate.attachment; else elseNotImagePlaceItem">
+      <ng-container *ngIf="itemTemplate.attachment.content_type === 'image/png' || itemTemplate.attachment.content_type === 'image/jpeg'; else elseNotImagePlaceItem">
+        <div class="template-place-list-item__image" [ngStyle]="{'background-image': 'url('+ itemTemplate.attachment.url + ')'}"></div>
+      </ng-container>
+    </ng-container>
+    <ng-template #elseNotImagePlaceItem>
+      <div class="template-place-list-item__image _default"></div>
+    </ng-template>
+
+    <div class="template-place-list-item__info">
+      <div class="template-place-list-item-info">
+        <ng-container *ngIf="itemType ==='place'">
+          <div class="template-place-list-item-info__name">
+            <span [routerLink]="['/places', itemTemplate.id]">
+              {{itemTemplate.name || 'Место'}}
+            </span>
+          </div>
+          <ng-container *ngIf="itemTemplate.address">
+            <div class="template-place-list-item-info__text">{{itemTemplate.address}}</div>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="itemType ==='event'">
+          <div class="template-place-list-item-info__name">
+            <span [routerLink]="['/event', itemTemplate.id]">
+              {{itemTemplate.name || 'Событие'}}
+            </span>
+          </div>
+          <ng-container *ngIf="itemTemplate.date_event">
+            <div class="template-place-list-item-info__text">{{itemTemplate.date_event.date | date:'dd.MM.yyyy'}}</div>
+          </ng-container>
+        </ng-container>
+
+        <div class="template-place-list-item-info__counter">
+          <app-relation-counter [counterItem]="itemTemplate.counters"></app-relation-counter>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

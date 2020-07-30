@@ -1,0 +1,56 @@
+<!--<router-outlet></router-outlet>-->
+<div class="uk-container l-container page-content page-persons">
+  <div class="l-left">
+    <app-inside-menu [activeMenu]="'person'"></app-inside-menu>
+  </div>
+  <div class="l-center">
+    <div class="feed-item feed-person-list">
+      <div class="feed-item__title">Персоны</div>
+      <div class="feed-person-list-items">
+        <ng-container *ngFor="let person of personAll">
+          <div class="uk-flex uk-flex-middle uk-flex-row uk-flex-nowrap n-person-row">
+              <div class="uk-card n-person-row__item">
+                <ng-container *ngIf="person.attachment; else elseNotImagePerson">
+                  <ng-container *ngIf="person.attachment.content_type === 'image/png' || person.attachment.content_type === 'image/jpeg'; else elseNotImagePerson">
+                    <ng-container *ngIf="person.attachment.url">
+                      <div class="n-person-avatar" [ngStyle]="{'background-image': 'url('+ person.attachment.url + ')'}"></div>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <ng-template #elseNotImagePerson>
+                  <div class="n-person-avatar _default"></div>
+                </ng-template>
+              </div>
+              <div class="uk-card  uk-margin-left n-person-row__item _cell-3">
+                <div class="n-person-info">
+                  <div class="n-person-info__name">
+                    <span [routerLink]="['/person', person.id]">
+                      {{person.first_name || 'Пользователь'}} {{person.surname}}
+                    </span>
+                  </div>
+                  <ng-container *ngIf="person.birth_date">
+                    <div class="n-person-info__date">
+                      {{person.birth_date.date | date:'dd.MM.yyyy'}}
+                      <ng-container *ngIf="person.death_date">
+                        &nbsp;—&nbsp;{{person.death_date.date | date:'dd.MM.yyyy'}}
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="uk-card  uk-margin-left n-person-row__item">
+                <ng-container *ngIf="person.counters">
+                    <div class="feed-person-info__counter">
+                      <app-relation-counter [counterItem]="person.counters"></app-relation-counter>
+                    </div>
+                </ng-container>
+              </div>
+            </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="l-right">
+    <app-info-widget [type]="'newFeedButton'" [classButton]="'_person'"  [itemWidget]="'person'"></app-info-widget>
+  </div>
+</div>

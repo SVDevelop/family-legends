@@ -1,0 +1,21 @@
+<div class="uk-container l-container page-content page-note-detail">
+  <div class="l-left">
+    <div class="g-back-button" [routerLink]="['/person']">
+      <div class="g-back-button__item"></div>
+      <div class="g-back-button__text"> Персоны</div>
+    </div>
+  </div>
+  <div class="l-center">
+    <ng-container>
+      <app-new-person-form></app-new-person-form>
+    </ng-container>
+  </div>
+  <div class="l-right">
+<!--    <ng-container *ngIf="itemDetail">-->
+<!--      <ng-container *ngIf="itemDetail.can_edit">-->
+<!--        <button class="new-item-create-button" type="submit"> Сохранить </button>-->
+<!--      </ng-container>-->
+<!--    </ng-container>-->
+  </div>
+</div>
+<router-outlet></router-outlet>

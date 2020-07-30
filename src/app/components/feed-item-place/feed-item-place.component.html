@@ -1,0 +1,70 @@
+<!-- PLACE -->
+  <div class="feed-item feed-event">
+    <div class="avatar-feed-author uk-flex">
+      <div class="avatar-with-icon">
+        <ng-container *ngIf="dataFeedPlace.person_creater.attachment | attachImage; else elseNotImagePlace">
+            <ng-container *ngIf="dataFeedPlace.person_creater.attachment.url">
+              <div  class="avatar avatar-def" [ngStyle]="{'background-image': 'url('+ dataFeedPlace.person_creater.attachment.url + ')'}"></div>
+            </ng-container>
+        </ng-container>
+
+        <ng-template #elseNotImagePlace>
+          <img class="avatar _default" src="assets/img/icons/persons.svg"
+               width="26" height="26">
+        </ng-template>
+        <div class="avatar-icon icon-place"><img src="assets/img/icons/place_w.svg" width="8" height="9"></div>
+
+      </div>
+      <div class="avatar-feed-author-text">
+        <a href="#" onclick="return false" class="avatar-feed-author-name" [routerLink]="['/person', dataFeedPlace.created_by]" >{{dataFeedPlace.person_creater.first_name||'Пользователь'}} {{dataFeedPlace.person_creater.surname||''}}</a>
+
+        <ng-container *ngIf="dataFeedPlace.updated_at; else elseNotUpdateDAte">
+          <small class="gray">Место обновлено •
+            <span class="time-readable">{{dataFeedPlace.updated_at | date:'dd.MM.yyyy, HH:mm' }}</span>
+          </small>
+        </ng-container>
+        <ng-template #elseNotUpdateDAte>
+          <small class="gray">Место создано •
+            <span class="time-readable">{{dataFeedPlace.created_at | date:'dd.MM.yyyy, HH:mm' }}</span>
+          </small>
+        </ng-template>
+      </div>
+    </div>
+    <div class="feed-router-e-wrapper">
+      <ng-container *ngIf="dataFeedPlace.attachments">
+        <ng-container *ngIf="dataFeedPlace.attachments | attachImages ">
+          <div class="feed-medias"
+               [ngClass]="'feed-medias-'+ (dataFeedPlace.attachments | attachImages).length">
+            <div class="feed-media-main" *ngIf="(dataFeedPlace.attachments | attachImages)[0]">
+              <div class="feed-media"
+                   [ngStyle]="{ 'background-image': 'url(' + (dataFeedPlace.attachments | attachImages)[0].url +')'}"></div>
+            </div>
+            <div class="feed-media-column" *ngIf=" (dataFeedPlace.attachments | attachImages).length > 1">
+              <div class="feed-media"
+                   *ngIf="(dataFeedPlace.attachments | attachImages)[1]"
+                   [ngStyle]="{ 'background-image': 'url(' + (dataFeedPlace.attachments | attachImages)[1].url +')'}"></div>
+              <div class="feed-media"
+                   *ngIf="(dataFeedPlace.attachments | attachImages)[2]"
+                   [ngStyle]="{ 'background-image': 'url(' + (dataFeedPlace.attachments | attachImages)[2].url +')'}"></div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="dataFeedPlace.place.name">
+        <div class="feed-description-name">{{dataFeedPlace.place.name}}</div>
+      </ng-container>
+      <ng-container *ngIf="dataFeedPlace.place.text">
+        <div class="feed-description">{{dataFeedPlace.place.text}}</div>
+      </ng-container>
+      <ng-container *ngIf="dataFeedPlace.place.address">
+        <div class="feed-sub-description">{{dataFeedPlace.place.address}}</div>
+      </ng-container>
+      <!--              CONTAINER_COUNTER-->
+      <!--              CONTAINER_COUNTER-->
+      <ng-container *ngIf="dataFeedPlace.place.counters">
+        <app-relation-counter [counterItem]="dataFeedPlace.place.counters" [classWrapMod]="'_left'"></app-relation-counter>
+      </ng-container>
+      <div class="feed-router-e" [routerLink]="['/places', dataFeedPlace.id]"></div>
+    </div>
+  </div>
+<!-- PLACE - END -->
